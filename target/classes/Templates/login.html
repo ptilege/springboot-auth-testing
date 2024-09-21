@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script>
+        let failedAttempts = 0;
+        function validateLoginForm() {
+            let valid = true;
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const usernameError = document.getElementById("usernameError");
+            const passwordError = document.getElementById("passwordError");
+
+            usernameError.textContent = "";
+            passwordError.textContent = "";
+
+            if (username.length < 3 || username.length > 30) {
+                usernameError.textContent = "Invalid username.";
+                valid = false;
+        }
+
+
+            if (password.length < 6 || password.length > 20 || !/^[a-zA-Z0-9!@#$%^&*]+$/.test(password)) {
+                passwordError.textContent = "Invalid password.";
+                valid = false;
+            }
+
+            return valid;
+
+        }
+
+
+        function handleLoginSubmit(event) {
+            event.preventDefault();
+
+            const usernameError = document.getElementById("usernameError");
+            const passwordError = document.getElementById("passwordError");
+            const formError = document.getElementById("formError");
+
+            usernameError.textContent = "";
+            passwordError.textContent = "";
+            formError.textContent = ""; // Clear any previous errors
+
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+
+            if (validateLoginForm()) {
+                // Simulate login request to the server
+                fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `username=${username}&password=${password}`
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = "/dashboard"; // Redirect to dashboard on success
+                        } else {
+                            // Increment the failed attempts counter
+                            failedAttempts++;
+
+                            // Check if failed attempts have reached 3
+                            if (failedAttempts >= 3) {
+                                formError.textContent = "Your account is locked. Please reset your password.";
+                                return;
+                            }
+
+                            // Parse JSON response to get the error message
+                            return response.json().then(data => {
+                                if (data.message) {
+                                    formError.textContent = data.message; // Display server error message
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        formError.textContent = "An error occurred. Please try again.";
+                    });
+            }
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("loginButton").addEventListener("click", handleLoginSubmit);
+
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1 class="my-4">Login Form</h1>
+    <form id="loginForm" action="/login" th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+            <small id="usernameError" class="form-text text-danger"></small>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+            <small id="passwordError" class="form-text text-danger"></small>
+        </div>
+        <button type="button" id="loginButton" class="btn btn-primary">Login</button>
+
+
+    </form>
+
+    <div id="formError" class="mt-3 text-danger"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
