@@ -42,13 +42,13 @@
 
             usernameError.textContent = "";
             passwordError.textContent = "";
-            formError.textContent = ""; // Clear any previous errors
+            formError.textContent = "";
 
             let username = document.getElementById("username").value;
             let password = document.getElementById("password").value;
 
             if (validateLoginForm()) {
-                // Simulate login request to the server
+
                 fetch('/login', {
                     method: 'POST',
                     headers: {
@@ -58,21 +58,21 @@
                 })
                     .then(response => {
                         if (response.ok) {
-                            window.location.href = "/dashboard"; // Redirect to dashboard on success
+                            window.location.href = "/dashboard";
                         } else {
-                            // Increment the failed attempts counter
+
                             failedAttempts++;
 
-                            // Check if failed attempts have reached 3
+
                             if (failedAttempts >= 3) {
                                 formError.textContent = "Your account is locked. Please reset your password.";
                                 return;
                             }
 
-                            // Parse JSON response to get the error message
+
                             return response.json().then(data => {
                                 if (data.message) {
-                                    formError.textContent = data.message; // Display server error message
+                                    formError.textContent = data.message;
                                 }
                             });
                         }
