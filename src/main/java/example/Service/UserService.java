@@ -16,6 +16,6 @@ public class UserService {
     }
 
     public Register findByUsername(String username) {
-        return userRepository.findByEmail(username); // Change method to find by email
+        return userRepository.findByEmail(username);
     }
 }

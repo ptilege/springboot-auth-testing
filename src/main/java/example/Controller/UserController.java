@@ -28,15 +28,15 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody Register user) {
-        // Validate the user object here, e.g., check for null values
+
 
         if (user.getEmail() == null || user.getPassword() == null) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email and password are required."));
         }
 
-        // Save the user to the database
+
         userService.registerUser(user);
-        return ResponseEntity.ok().build(); // Return 200 OK
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/login")
@@ -52,7 +52,7 @@ public class UserController {
         Register user = userService.findByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
             session.setAttribute("username", username);
-            return ResponseEntity.ok().build(); // Return 200 OK
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", ""));
         }
