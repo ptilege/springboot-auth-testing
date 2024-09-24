@@ -59,12 +59,12 @@ public class UserController {
     }
 
 
-    @GetMapping("/dashboard")
-    public String showDashboard(HttpSession session) {
-        if (session.getAttribute("username") != null) {
-            return "dashboard";
-        } else {
-            return "redirect:/login";
-        }
-    }
+//    @GetMapping("/dashboard")
+//    public String showDashboard(HttpSession session) {
+//        if (session.getAttribute("username") != null) {
+//            return "dashboard";
+//        } else {
+//            return "redirect:/login";
+//        }
+//    }
 }
