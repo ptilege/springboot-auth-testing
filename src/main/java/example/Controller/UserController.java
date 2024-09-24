@@ -59,10 +59,10 @@ public class UserController {
     }
 
 
-    @GetMapping("/dashboard")
+    @GetMapping("/dashbor")
     public String showDashboard(HttpSession session) {
         if (session.getAttribute("username") != null) {
-            return "dashboard";
+            return "dashboa";
         } else {
             return "redirect:/login";
         }
